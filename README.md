@@ -71,3 +71,4 @@ Nunca subas `terraform.tfvars`, llaves ni estados: están en `.gitignore`.
 - La VM usa por defecto `VM.Standard.E2.1.Micro` (Always Free, AMD). Para ARM (`VM.Standard.A1.Flex`) cambia la variable `shape`; la imagen ya es multi-arquitectura.
 - Cloudflare está en modo SSL *Flexible* (HTTPS hasta Cloudflare, HTTP hasta la VM). El puerto 443 queda abierto en la VM y en la security list; para cifrado extremo a extremo hay que añadir un *Origin Certificate* a nginx.
 - `http://<ip-publica>` funciona aunque no uses Cloudflare.
+# Portafolio
