@@ -1,0 +1,15 @@
+---
+// Cinta adhesiva con los nombres de los proyectos. Decorativa: el contenido real
+// está en la sección de proyectos, por eso va oculta a lectores de pantalla.
+interface Props {
+  items: string[];
+}
+const { items } = Astro.props;
+const loop = [...items, ...items, ...items, ...items];
+---
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    {loop.map((item) => <span>{item}</span>)}
+  </div>
+</div>

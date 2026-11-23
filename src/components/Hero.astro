@@ -1,13 +1,39 @@
 ---
 import { profile } from '../data/projects';
+import Glyph from './Glyph.astro';
+
+// "Hola, soy" + el nombre completo; cada palabra es un recorte con su propio
+// cuerpo, tipografía y ángulo. El texto del h1 se lee completo y en orden.
+const nameParts = profile.name.split(' ');
+const words = ['Hola,', 'soy', ...nameParts.slice(0, -1), `${nameParts[nameParts.length - 1]}.`];
+const style = [
+  'cut-paper small',
+  'cut-yellow small',
+  'cut-pink big',
+  'cut-serif-yellow',
+  'cut-toner',
+  'cut-serif-blue',
+];
 ---
 
 <section class="hero" aria-labelledby="hero-title">
-  <p class="eyebrow">{profile.role}</p>
-  <h1 id="hero-title">Hola, soy {profile.name}.</h1>
-  <p class="lead">{profile.bio}</p>
-  <p class="actions">
-    <a class="btn" href="#proyectos">Ver proyectos</a>
-    <a class="btn ghost" href={profile.github} rel="noopener noreferrer" target="_blank">GitHub ↗</a>
-  </p>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <h1 id="hero-title">
+        {words.map((word, i) => (
+          <>
+            <span class={`cut ${style[i % style.length]}`} style={`--n:${i}`}>{word}</span>{' '}
+          </>
+        ))}
+      </h1>
+      <p class="role">{profile.role}</p>
+      <p class="lead">{profile.bio}</p>
+      <p class="actions">
+        <a class="btn btn-main" href="#proyectos">Ver proyectos</a>
+        <a class="btn ext" href={profile.github} rel="noopener noreferrer" target="_blank">GitHub</a>
+        <a class="btn ext" href={profile.linkedin} rel="noopener noreferrer" target="_blank">LinkedIn</a>
+      </p>
+    </div>
+    <Glyph />
+  </div>
 </section>

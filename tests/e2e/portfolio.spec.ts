@@ -22,7 +22,7 @@ test('lista proyectos y navega al detalle de uno', async ({ page }) => {
 
 test('los enlaces externos abren GitHub de forma segura', async ({ page }) => {
   await page.goto('/');
-  const gh = page.getByRole('link', { name: /GitHub ↗/ }).first();
+  const gh = page.getByRole('link', { name: /GitHub/ }).first();
   await expect(gh).toHaveAttribute('href', /^https:\/\/github\.com\/lhuachl/);
   await expect(gh).toHaveAttribute('rel', /noopener/);
   await expect(gh).toHaveAttribute('target', '_blank');
@@ -32,6 +32,16 @@ test('una ruta inexistente muestra la página 404', async ({ page }) => {
   const response = await page.goto('/esta-ruta-no-existe');
   expect(response?.status()).toBe(404);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('404');
+});
+
+test('con movimiento reducido no hay animaciones y el contenido sigue visible', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  const animated = await page.evaluate(
+    () => getComputedStyle(document.querySelector('.marquee-track')!).animationName,
+  );
+  expect(animated).toBe('none');
 });
 
 test('en móvil no hay scroll horizontal', async ({ page }) => {

@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-23T07:21:53.794Z",
+  "title": "Design System: Portafolio de Alex Joshua Villegas Ibanez",
+  "extensions": {
+    "colorMeta": {
+      "newsprint": {
+        "role": "neutral",
+        "displayName": "Papel prensa",
+        "canonical": "#f1ede2",
+        "tonalRamp": [
+          "#2e2a1f",
+          "#564a2a",
+          "#78683a",
+          "#9e884c",
+          "#b9a56f",
+          "#cdbf98",
+          "#e1d9c1",
+          "#f3f1ed"
+        ]
+      },
+      "paper-sheet": {
+        "role": "neutral",
+        "displayName": "Hoja de papel",
+        "canonical": "#faf7ee",
+        "tonalRamp": [
+          "#322c1b",
+          "#63511d",
+          "#8a7229",
+          "#b59535",
+          "#ceb159",
+          "#dcc789",
+          "#eadeb8",
+          "#f4f2eb"
+        ]
+      },
+      "paper-shade": {
+        "role": "neutral",
+        "displayName": "Sombra de papel",
+        "canonical": "#e4ddca",
+        "tonalRamp": [
+          "#2d291f",
+          "#54492b",
+          "#76673c",
+          "#9b874f",
+          "#b7a471",
+          "#cbbe9a",
+          "#e0d8c2",
+          "#f2f1ed"
+        ]
+      },
+      "toner": {
+        "role": "neutral",
+        "displayName": "Toner",
+        "canonical": "#111111",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#757575",
+          "#949494",
+          "#b3b3b3",
+          "#d1d1d1",
+          "#f0f0f0"
+        ]
+      },
+      "toner-soft": {
+        "role": "neutral",
+        "displayName": "Toner suave",
+        "canonical": "#3b3731",
+        "tonalRamp": [
+          "#282724",
+          "#46413a",
+          "#625b51",
+          "#80776a",
+          "#9e968a",
+          "#bab4ab",
+          "#d5d2cd",
+          "#f0f0ef"
+        ]
+      },
+      "riso-pink": {
+        "role": "primary",
+        "displayName": "Rosa riso",
+        "canonical": "#ff3b8d",
+        "tonalRamp": [
+          "#3b1123",
+          "#800035",
+          "#b3004b",
+          "#eb0062",
+          "#ff2982",
+          "#ff66a6",
+          "#ffa3ca",
+          "#f8e7ee"
+        ]
+      },
+      "riso-blue": {
+        "role": "secondary",
+        "displayName": "Azul riso",
+        "canonical": "#2f45ff",
+        "tonalRamp": [
+          "#11163b",
+          "#000d80",
+          "#0013b3",
+          "#0019eb",
+          "#293fff",
+          "#6676ff",
+          "#a3adff",
+          "#e7e9f8"
+        ]
+      },
+      "highlighter-yellow": {
+        "role": "secondary",
+        "displayName": "Amarillo marcador",
+        "canonical": "#ffe83a",
+        "tonalRamp": [
+          "#3b3611",
+          "#807100",
+          "#b39e00",
+          "#ebcf00",
+          "#ffe629",
+          "#ffed66",
+          "#fff4a3",
+          "#f8f6e7"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "La palabra grande del recorte principal."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Títulos de sección sobre franja de toner o amarilla."
+      },
+      "cut-serif": {
+        "displayName": "Cut serif",
+        "purpose": "Palabras alternas del nombre en el hero."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto corrido."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Números de página, estados y habilidades."
+      }
+    },
+    "shadows": [
+      {
+        "name": "recorte",
+        "value": "0 2px 0 rgb(17 17 17 / 0.14), 2px 9px 12px -6px rgb(17 17 17 / 0.5)",
+        "purpose": "Palabras recortadas, títulos de sección y marca."
+      },
+      {
+        "name": "hoja-pegada",
+        "value": "0 2px 0 rgb(17 17 17 / 0.12), 4px 16px 22px -10px rgb(17 17 17 / 0.55)",
+        "purpose": "La hoja del glifo."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-settle",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Asentamiento exponencial de recortes, tarjetas y botones."
+      },
+      {
+        "name": "paste",
+        "value": "0.9s, retraso 110ms por palabra",
+        "purpose": "Los recortes del título se pegan una vez al cargar."
+      },
+      {
+        "name": "scan",
+        "value": "1.5s tras 0.9s",
+        "purpose": "Barra de luz de fotocopiadora sobre el glifo, una sola vez."
+      },
+      {
+        "name": "tape",
+        "value": "38s linear, 3 vueltas",
+        "purpose": "Cinta de proyectos; se detiene sola."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "56rem"
+      },
+      {
+        "name": "narrow-discs",
+        "value": "55.99rem"
+      },
+      {
+        "name": "wrap-max",
+        "value": "72rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal: pegatina amarilla con borde de toner.",
+      "html": "<a class=\"ds-btn ds-btn-main\" href=\"#\">Ver proyectos</a>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;padding:.75rem 1.15rem;font:800 1rem/1.1 \"Libre Franklin\",system-ui,sans-serif;color:#111;background:#faf7ee;border:2px solid #111;text-decoration:none;rotate:-1.4deg;transition:translate .35s cubic-bezier(.16,1,.3,1),scale .35s cubic-bezier(.16,1,.3,1),background-color .2s}.ds-btn:hover{translate:0 -3px;scale:1.03;background-color:#ff3b8d}.ds-btn:focus-visible{outline:3px solid #2f45ff;outline-offset:3px}.ds-btn-main{background:#ffe83a}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Acciones secundarias sobre hoja de papel.",
+      "html": "<a class=\"ds-btn\" href=\"#\">GitHub</a>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;padding:.75rem 1.15rem;font:800 1rem/1.1 \"Libre Franklin\",system-ui,sans-serif;color:#111;background:#faf7ee;border:2px solid #111;text-decoration:none;rotate:-1.4deg;transition:translate .35s cubic-bezier(.16,1,.3,1),scale .35s cubic-bezier(.16,1,.3,1),background-color .2s}.ds-btn:hover{translate:0 -3px;scale:1.03;background-color:#ff3b8d}.ds-btn:focus-visible{outline:3px solid #2f45ff;outline-offset:3px}.ds-btn-main{background:#ffe83a}"
+    },
+    {
+      "name": "Page Card",
+      "kind": "card",
+      "refersTo": "page-card",
+      "description": "Una página pegada con número, estado y descripción.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-top\"><span class=\"ds-page\">P101</span><span class=\"ds-status\">joven</span></div><h3>carrier-cli</h3><p>Orquestador de herramientas de reconocimiento pasivo.</p></article>",
+      "css": ".ds-card{position:relative;display:grid;gap:1rem;padding:1.4rem;background:#faf7ee;border:2px solid #111;color:#111;rotate:-1deg;font-family:\"Libre Franklin\",system-ui,sans-serif;max-width:22rem}.ds-card-top{display:flex;justify-content:space-between;align-items:center}.ds-page{font:800 .85rem/1 \"Libre Franklin\",sans-serif;letter-spacing:.08em;background:#111;color:#f1ede2;padding:.35rem .6rem}.ds-status{font:800 .8rem/1 \"Libre Franklin\",sans-serif;letter-spacing:.08em;text-transform:uppercase;background:#ff3b8d;color:#111;border:2px solid #111;padding:.4rem .7rem;rotate:3deg}.ds-card h3{margin:0;font:400 1.6rem/1.1 \"Bowlby One\",sans-serif}.ds-card p{margin:0;color:#3b3731}"
+    },
+    {
+      "name": "Cut Word",
+      "kind": "custom",
+      "refersTo": "cut-word",
+      "description": "Palabra recortada con fondo sólido y sombra suave.",
+      "html": "<span class=\"ds-cut\">Alex</span> <span class=\"ds-cut ds-cut-serif\">Ibanez.</span>",
+      "css": ".ds-cut{display:inline-block;line-height:1;padding:.12em .28em .16em;rotate:-2deg;font:400 3rem/1 \"Bowlby One\",sans-serif;background:#ff3b8d;color:#111;box-shadow:0 2px 0 rgb(17 17 17/.14),2px 9px 12px -6px rgb(17 17 17/.5)}.ds-cut-serif{font-family:\"Abril Fatface\",serif;background:#2f45ff;color:#f1ede2;rotate:2.4deg}"
+    },
+    {
+      "name": "Section Title",
+      "kind": "custom",
+      "refersTo": "section-title",
+      "description": "Título de sección sobre franja de toner.",
+      "html": "<h2 class=\"ds-title\">Proyectos</h2>",
+      "css": ".ds-title{display:inline-block;font:400 2.2rem/1 \"Bowlby One\",sans-serif;background:#111;color:#f1ede2;padding:.2em .5em .24em;rotate:-1.5deg;box-shadow:0 2px 0 rgb(17 17 17/.14),2px 9px 12px -6px rgb(17 17 17/.5)}"
+    },
+    {
+      "name": "Skill Label",
+      "kind": "chip",
+      "refersTo": "skill-label",
+      "description": "Etiqueta de habilidad, cada una con su ángulo.",
+      "html": "<span class=\"ds-label\">Docker</span> <span class=\"ds-label ds-label-pink\">Terraform</span>",
+      "css": ".ds-label{display:inline-block;font:800 1rem/1 \"Libre Franklin\",sans-serif;letter-spacing:.1em;text-transform:uppercase;background:#111;color:#f1ede2;padding:.75rem 1.1rem;rotate:-2deg}.ds-label-pink{background:#ff3b8d;color:#111}"
+    },
+    {
+      "name": "Language Tag",
+      "kind": "chip",
+      "refersTo": "tag-pill",
+      "description": "Píldora de lenguaje en las tarjetas.",
+      "html": "<span class=\"ds-tag\">TypeScript</span>",
+      "css": ".ds-tag{display:inline-block;font:800 .85rem/1.2 \"Libre Franklin\",sans-serif;border:2px solid #111;border-radius:999px;padding:.25rem .8rem;color:#111;background:#faf7ee}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Fotocopia y tijera",
+    "overview": "Cada pieza es un recorte pegado a mano sobre un pliego de papel prensa: letras cortadas de distinto cuerpo y ángulo, páginas con cinta, puntos de semitono y tintas riso fluorescentes. El color ocupa regiones enteras y una sola grilla rígida (P101, P102, P103) ordena el desorden.",
+    "keyCharacteristics": [
+      "Papel prensa claro como suelo; toner negro para el texto; tres tintas riso como rellenos de región.",
+      "Letras recortadas con tres voces tipográficas mezcladas por palabra.",
+      "Cada pieza con su propio ángulo; el movimiento solo ocurre si el visitante no pidió menos movimiento."
+    ],
+    "rules": [
+      {
+        "name": "The Ink-On-Region Rule",
+        "body": "Las tintas riso rellenan regiones y se acompañan de texto en toner o en papel; nunca se usan como color de texto sobre papel.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tonal Honesty Rule",
+        "body": "Los puntos de semitono no cruzan texto corrido.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mixed Cut Rule",
+        "body": "Dentro de una línea de recortes se alternan al menos dos voces tipográficas y dos colores de fondo.",
+        "section": "typography"
+      },
+      {
+        "name": "The Code Is Code Rule",
+        "body": "El monoespaciado solo aparece donde hay código real.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Edge Rule",
+        "body": "Una superficie declara su elevación una sola vez: borde o sombra, nunca ambos.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do rellenar regiones con rosa, azul o amarillo y poner el texto en toner o en papel según el contraste.",
+      "Do darle a cada pieza su ángulo y a cada proyecto un tratamiento visual propio.",
+      "Do mantener las direcciones P101–P103 como la única grilla rígida.",
+      "Do envolver todo movimiento en prefers-reduced-motion: no-preference."
+    ],
+    "donts": [
+      "Don't volver a una grilla de tarjetas iguales sobre fondo oscuro.",
+      "Don't poner puntos de semitono detrás de texto corrido.",
+      "Don't presentar el identicon de GitHub como una foto.",
+      "Don't usar sombras de bloque duro ni apilar borde y sombra."
+    ]
+  }
+}

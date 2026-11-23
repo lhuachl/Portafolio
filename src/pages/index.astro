@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import Marquee from '../components/Marquee.astro';
 import ProjectList from '../components/ProjectList.astro';
 import Skills from '../components/Skills.astro';
 import Contact from '../components/Contact.astro';
@@ -9,9 +10,12 @@ import { projects } from '../data/projects';
 
 <Base>
   <Hero />
-  <section id="proyectos" aria-labelledby="projects-title">
-    <h2 id="projects-title">Proyectos</h2>
-    <ProjectList projects={projects} />
+  <Marquee items={projects.map((p) => p.name)} />
+  <section id="proyectos" class="projects" aria-labelledby="projects-title">
+    <div class="wrap">
+      <h2 id="projects-title" class="cut-title">Proyectos</h2>
+      <ProjectList projects={projects} />
+    </div>
   </section>
   <Skills />
   <Contact />

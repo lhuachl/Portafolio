@@ -15,23 +15,31 @@ const { title = `${profile.name} · Portafolio`, description = profile.bio } = A
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#f1ede2" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/bowlby-one-400-latin.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/libre-franklin-latin.woff2" crossorigin />
     <title>{title}</title>
   </head>
   <body>
     <a class="skip" href="#main">Saltar al contenido</a>
     <header class="site-header">
-      <a class="brand" href="/">{profile.handle}</a>
-      <nav aria-label="Principal">
-        <a href="/#proyectos">Proyectos</a>
-        <a href="/#habilidades">Habilidades</a>
-        <a href="/#contacto">Contacto</a>
-      </nav>
+      <div class="wrap">
+        <a class="brand" href="/">{profile.handle}</a>
+        <nav aria-label="Principal">
+          <a href="/#proyectos">Proyectos</a>
+          <a href="/#habilidades">Habilidades</a>
+          <a href="/#contacto">Contacto</a>
+        </nav>
+      </div>
     </header>
     <main id="main"><slot /></main>
     <footer class="site-footer">
-      <p>© {new Date().getFullYear()} {profile.name} · Hecho con Astro</p>
+      <div class="wrap">
+        <p>© {new Date().getFullYear()} {profile.name}</p>
+        <p>Hecho con Astro y mucha cinta.</p>
+      </div>
     </footer>
   </body>
 </html>

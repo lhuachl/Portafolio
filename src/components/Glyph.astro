@@ -1,0 +1,32 @@
+---
+// Identicon de GitHub de @lhuachl (github.com/lhuachl.png), redibujado como geometría:
+// una grilla simétrica de 5x5. Se imprime a dos tintas riso desalineadas:
+// rosa sólido y azul en semitono, con multiplicación donde se cruzan.
+const cells: Array<[number, number]> = [
+  [0, 0], [4, 0],
+  [0, 1], [1, 1], [2, 1], [3, 1], [4, 1],
+  [0, 2], [2, 2], [4, 2],
+  [2, 3],
+  [0, 4], [2, 4], [4, 4],
+];
+const size = 70;
+---
+
+<figure class="glyph">
+  <div class="plate">
+    <svg viewBox="-14 -14 378 378" role="img" aria-label="Glifo de GitHub de lhuachl" focusable="false">
+      <defs>
+        <pattern id="halftone" width="11" height="11" patternUnits="userSpaceOnUse" patternTransform="rotate(28)">
+          <circle cx="5.5" cy="5.5" r="3.6" fill="#2f45ff" />
+        </pattern>
+      </defs>
+      <g class="ink ink-blue">
+        {cells.map(([c, r]) => <rect x={c * size} y={r * size} width={size} height={size} fill="url(#halftone)" />)}
+      </g>
+      <g class="ink ink-pink">
+        {cells.map(([c, r]) => <rect x={c * size} y={r * size} width={size} height={size} fill="#ff3b8d" />)}
+      </g>
+    </svg>
+  </div>
+  <figcaption>glifo de github.com/lhuachl</figcaption>
+</figure>

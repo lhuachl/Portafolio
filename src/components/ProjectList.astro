@@ -9,6 +9,6 @@ interface Props {
 const { projects } = Astro.props;
 ---
 
-<ul class="grid" aria-label="Lista de proyectos">
-  {sortByDate(projects).map((project) => <li><ProjectCard project={project} /></li>)}
+<ul class="sheet" aria-label="Lista de proyectos">
+  {sortByDate(projects).map((project, i) => <li data-slot={i % 3}><ProjectCard project={project} /></li>)}
 </ul>

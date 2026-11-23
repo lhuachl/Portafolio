@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ProjectArt from '../../components/ProjectArt.astro';
 import { projects } from '../../data/projects';
 import { slugify } from '../../lib/projects';
 
@@ -11,21 +12,29 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
+const slug = slugify(project.name);
 ---
 
 <Base title={`${project.name} · Portafolio`} description={project.description}>
   <article class="detail">
-    <p><a href="/#proyectos">← Volver a proyectos</a></p>
-    <h1>{project.name}</h1>
-    <p class="lead">{project.description}</p>
-    <dl>
-      <dt>Lenguaje</dt>
-      <dd>{project.language}</dd>
-      <dt>Última actualización</dt>
-      <dd><time datetime={project.updated}>{project.updated}</time></dd>
-    </dl>
-    <p class="actions">
-      <a class="btn" href={project.url} rel="noopener noreferrer" target="_blank">Ver repositorio ↗</a>
-    </p>
+    <div class="wrap detail-grid">
+      <div class="detail-copy">
+        <p><a class="back" href="/#proyectos">Volver a proyectos</a></p>
+        <h1 class="cut cut-pink big">{project.name}</h1>
+        <p class="lead">{project.description}</p>
+        <dl>
+          {project.page && (<><dt>Página</dt><dd>{project.page}</dd></>)}
+          {project.status && (<><dt>Estado</dt><dd>{project.status}</dd></>)}
+          <dt>Lenguaje</dt>
+          <dd>{project.language}</dd>
+          <dt>Última actualización</dt>
+          <dd><time datetime={project.updated}>{project.updated}</time></dd>
+        </dl>
+        <p class="actions">
+          <a class="btn btn-main ext" href={project.url} rel="noopener noreferrer" target="_blank">Ver repositorio</a>
+        </p>
+      </div>
+      <div class="detail-art"><ProjectArt slug={slug} /></div>
+    </div>
   </article>
 </Base>

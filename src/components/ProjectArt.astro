@@ -1,0 +1,78 @@
+---
+// Ilustraciones geométricas (SVG nítido, sin dibujo a mano) para cada proyecto.
+// Es decoración: el contenido real está en el texto de la tarjeta.
+interface Props {
+  slug: string;
+}
+const { slug } = Astro.props;
+
+// Rejilla de puertos de port_scan: 16 x 6, patrón fijo de "abiertos".
+const open = new Set([3, 11, 22, 25, 31, 44, 47, 58, 63, 70, 77, 80, 85, 91]);
+const filtered = new Set([5, 17, 29, 38, 52, 66, 74, 89]);
+
+const asm = [
+  'mov rax, 1',
+  'mov rdi, 1',
+  'lea rsi, [msg]',
+  'mov rdx, len',
+  'syscall',
+];
+---
+
+{
+  slug === 'carrier-cli' && (
+    <svg class="art art-radar" viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="#111" stroke-width="1.5">
+        <circle cx="160" cy="90" r="78" />
+        <circle cx="160" cy="90" r="52" />
+        <circle cx="160" cy="90" r="26" />
+        <path d="M160 6v168M76 90h168" />
+        <path d="M101 31l118 118M219 31L101 149" stroke-dasharray="3 5" />
+      </g>
+      <path class="sweep" d="M160 90 L160 12 A78 78 0 0 1 226 49 Z" fill="#2f45ff" fill-opacity="0.35" />
+      <g fill="#ff3b8d" stroke="#111" stroke-width="1.5">
+        <circle cx="203" cy="55" r="6" />
+        <circle cx="118" cy="68" r="6" />
+        <circle cx="190" cy="124" r="6" />
+        <circle cx="132" cy="120" r="6" />
+      </g>
+      <circle cx="160" cy="90" r="4" fill="#111" />
+    </svg>
+  )
+}
+
+{
+  slug === 'port-scan' && (
+    <svg class="art art-ports" viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+      {Array.from({ length: 96 }, (_, i) => {
+        const x = 8 + (i % 16) * 19;
+        const y = 8 + Math.floor(i / 16) * 28;
+        const fill = open.has(i) ? '#ff3b8d' : filtered.has(i) ? '#ffe83a' : '#f1ede2';
+        return <rect x={x} y={y} width="15" height="22" fill={fill} stroke="#111" stroke-width="1.5" />;
+      })}
+    </svg>
+  )
+}
+
+{
+  slug === 'little-bit-of-asm' && (
+    <pre class="art art-asm" aria-hidden="true">
+      {asm.map((line, i) => (
+        <span class="line"><span class="ln">{String(i + 1).padStart(2, '0')}</span>{line}</span>
+      ))}
+    </pre>
+  )
+}
+
+{
+  !['carrier-cli', 'port-scan', 'little-bit-of-asm'].includes(slug) && (
+    <svg class="art art-dots" viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="art-dots" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(28)">
+          <circle cx="6" cy="6" r="3.4" fill="#ff3b8d" />
+        </pattern>
+      </defs>
+      <rect x="8" y="8" width="304" height="164" fill="url(#art-dots)" stroke="#111" stroke-width="1.5" />
+    </svg>
+  )
+}

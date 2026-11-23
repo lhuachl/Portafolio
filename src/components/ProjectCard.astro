@@ -1,18 +1,25 @@
 ---
 import type { Project } from '../data/projects';
 import { slugify } from '../lib/projects';
+import ProjectArt from './ProjectArt.astro';
 
 interface Props {
   project: Project;
 }
 const { project } = Astro.props;
+const slug = slugify(project.name);
 ---
 
 <article class="card" data-language={project.language}>
-  <h3><a href={`/projects/${slugify(project.name)}`}>{project.name}</a></h3>
+  <header>
+    {project.page && <span class="page">{project.page}</span>}
+    {project.status && <span class="status">{project.status}</span>}
+  </header>
+  <ProjectArt slug={slug} />
+  <h3><a href={`/projects/${slug}`}>{project.name}</a></h3>
   <p>{project.description}</p>
   <footer>
     <span class="tag">{project.language}</span>
-    <a href={project.url} rel="noopener noreferrer" target="_blank">GitHub ↗</a>
+    <a class="ext" href={project.url} rel="noopener noreferrer" target="_blank">GitHub</a>
   </footer>
 </article>

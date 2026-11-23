@@ -5,6 +5,10 @@ export interface Project {
   url: string;
   /** ISO date (YYYY-MM-DD) of the last push */
   updated: string;
+  /** Fixed "page" address on the zine sheet, e.g. P101 */
+  page?: string;
+  /** Honest, short status label shown as a sticker */
+  status?: string;
 }
 
 export const profile = {
@@ -35,6 +39,8 @@ export const projects: Project[] = [
     language: 'Ruby',
     url: 'https://github.com/lhuachl/carrier-cli',
     updated: '2026-08-21',
+    page: 'P101',
+    status: 'joven',
   },
   {
     name: 'port_scan',
@@ -43,6 +49,8 @@ export const projects: Project[] = [
     language: 'TypeScript',
     url: 'https://github.com/lhuachl/port_scan',
     updated: '2026-08-21',
+    page: 'P102',
+    status: 'pequeño',
   },
   {
     name: 'little-bit-of-asm',
@@ -51,5 +59,7 @@ export const projects: Project[] = [
     language: 'Assembly',
     url: 'https://github.com/lhuachl/little-bit-of-asm',
     updated: '2026-08-21',
+    page: 'P103',
+    status: 'aprendiendo',
   },
 ];
