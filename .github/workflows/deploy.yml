@@ -1,0 +1,148 @@
+name: Deploy (main) - Docker, Terraform y Ansible
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# Evita dos despliegues (y dos terraform apply) a la vez.
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  # 1) Mismos tests que en dev: no se despliega algo roto.
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  # 2) Empaquetar en Docker y subir a DockerHub.
+  docker:
+    name: Imagen a DockerHub
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: QEMU (build multi-arquitectura)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login en DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Construir y subir
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/portafolio:latest
+            ${{ secrets.DOCKER_USERNAME }}/portafolio:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # 3) Terraform: VM Ubuntu 24.04 en OCI + red + IP pública + DNS Cloudflare.
+  terraform:
+    name: Terraform (OCI + Cloudflare)
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      public_ip: ${{ steps.out.outputs.public_ip }}
+      url: ${{ steps.out.outputs.url }}
+    defaults:
+      run:
+        working-directory: infra/terraform
+    env:
+      TF_IN_AUTOMATION: "true"
+      TF_VAR_tenancy_ocid: ${{ secrets.OCI_TENANCY_OCID }}
+      TF_VAR_user_ocid: ${{ secrets.OCI_USER_OCID }}
+      TF_VAR_fingerprint: ${{ secrets.OCI_FINGERPRINT }}
+      TF_VAR_private_key: ${{ secrets.OCI_PRIVATE_KEY }}
+      TF_VAR_region: ${{ secrets.OCI_REGION }}
+      TF_VAR_compartment_ocid: ${{ secrets.OCI_COMPARTMENT_OCID }}
+      TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
+      TF_VAR_enable_cloudflare: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+      TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+      TF_VAR_domain: ${{ secrets.CLOUDFLARE_DOMAIN }}
+      # Credenciales S3 (Customer Secret Keys de OCI) para el estado remoto.
+      AWS_ACCESS_KEY_ID: ${{ secrets.OCI_S3_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.OCI_S3_SECRET_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Configuración del backend (OCI Object Storage)
+        run: |
+          cat > backend.hcl <<EOF
+          bucket    = "${{ secrets.OCI_STATE_BUCKET }}"
+          endpoints = { s3 = "https://${{ secrets.OCI_NAMESPACE }}.compat.objectstorage.${{ secrets.OCI_REGION }}.oraclecloud.com" }
+          EOF
+
+      - name: terraform init
+        run: terraform init -input=false -backend-config=backend.hcl
+
+      - name: terraform validate
+        run: terraform validate
+
+      - name: terraform apply
+        run: terraform apply -auto-approve -input=false
+
+      - name: Leer outputs
+        id: out
+        run: |
+          echo "public_ip=$(terraform output -raw public_ip)" >> "$GITHUB_OUTPUT"
+          echo "url=$(terraform output -raw url)" >> "$GITHUB_OUTPUT"
+
+  # 4) Ansible: configura la VM (docker, git, iptables 22/80/443) y levanta el contenedor.
+  ansible:
+    name: Ansible (configurar VM y desplegar)
+    needs: [docker, terraform]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/ansible
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      PUBLIC_IP: ${{ needs.terraform.outputs.public_ip }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Ansible
+        run: pip install --user ansible-core
+
+      - name: Llave SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Validar sintaxis del playbook
+        run: ansible-playbook --syntax-check -i "${PUBLIC_IP}," playbook.yml
+
+      - name: Ejecutar playbook
+        run: |
+          ansible-playbook -i "${PUBLIC_IP}," -u ubuntu \
+            --private-key ~/.ssh/deploy_key playbook.yml
+
+      - name: Resumen
+        run: |
+          echo "### Despliegue listo" >> "$GITHUB_STEP_SUMMARY"
+          echo "- IP: \`${PUBLIC_IP}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- URL: ${{ needs.terraform.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,136 @@
+---
+# Configura la VM Ubuntu 24.04 de OCI: docker, git, firewall (iptables 22/80/443)
+# y despliega el contenedor del portafolio desde DockerHub.
+#
+# Uso (lo hace deploy.yml):
+#   DOCKER_USERNAME=usuario ansible-playbook -i "<IP>," -u ubuntu \
+#     --private-key ~/.ssh/id_ed25519 playbook.yml
+- name: Configurar la VM del portafolio
+  hosts: all
+  become: true
+  vars:
+    app_dir: /opt/portafolio
+    docker_username: "{{ lookup('ansible.builtin.env', 'DOCKER_USERNAME') }}"
+
+  pre_tasks:
+    - name: Esperar a que la VM acepte SSH
+      ansible.builtin.wait_for_connection:
+        delay: 5
+        timeout: 300
+
+    - name: Validar que DOCKER_USERNAME está definido
+      ansible.builtin.assert:
+        that: docker_username | length > 0
+        fail_msg: "Exporta DOCKER_USERNAME antes de ejecutar el playbook."
+
+  tasks:
+    - name: Actualizar índice de apt
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Instalar docker, compose, git e iptables
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - git
+          - docker.io
+          - docker-compose-v2
+          - iptables
+          - iptables-persistent
+        state: present
+
+    - name: Docker habilitado y en ejecución
+      ansible.builtin.systemd:
+        name: docker
+        enabled: true
+        state: started
+
+    - name: Usuario ubuntu puede usar docker
+      ansible.builtin.user:
+        name: ubuntu
+        groups: docker
+        append: true
+
+    # Firewall con iptables. Se reemplaza el rules.v4 por defecto de la imagen de
+    # OCI (que termina en REJECT) por uno propio: política DROP y solo 22, 80, 443.
+    # Los puertos publicados por Docker pasan por FORWARD/DNAT; el filtro de red
+    # real también lo aplica la security list de OCI (ver infra/terraform/network.tf).
+    - name: Reglas de iptables persistentes
+      ansible.builtin.copy:
+        dest: /etc/iptables/rules.v4
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          *filter
+          :INPUT DROP [0:0]
+          :FORWARD ACCEPT [0:0]
+          :OUTPUT ACCEPT [0:0]
+          -A INPUT -i lo -j ACCEPT
+          -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+          -A INPUT -p icmp -j ACCEPT
+          -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -j ACCEPT
+          -A INPUT -p tcp --dport 80 -m conntrack --ctstate NEW -j ACCEPT
+          -A INPUT -p tcp --dport 443 -m conntrack --ctstate NEW -j ACCEPT
+          COMMIT
+      notify:
+        - Recargar iptables
+        - Reiniciar docker
+
+    - name: Aplicar firewall antes de levantar el contenedor
+      ansible.builtin.meta: flush_handlers
+
+    - name: Directorio de la aplicación
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Copiar docker-compose.yml
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../../docker-compose.yml"
+        dest: "{{ app_dir }}/docker-compose.yml"
+        mode: "0644"
+
+    - name: Variables del compose (.env)
+      ansible.builtin.copy:
+        dest: "{{ app_dir }}/.env"
+        mode: "0644"
+        content: |
+          DOCKER_USERNAME={{ docker_username }}
+
+    - name: Descargar la última imagen de DockerHub
+      ansible.builtin.command: docker compose pull --ignore-buildable
+      args:
+        chdir: "{{ app_dir }}"
+      register: compose_pull
+      changed_when: "'Downloaded newer image' in compose_pull.stderr or 'Pulled' in compose_pull.stderr"
+
+    - name: Levantar el portafolio
+      ansible.builtin.command: docker compose up -d --remove-orphans
+      args:
+        chdir: "{{ app_dir }}"
+      register: compose_up
+      changed_when: "'Started' in compose_up.stderr or 'Recreated' in compose_up.stderr or 'Created' in compose_up.stderr"
+
+    - name: Verificar que el sitio responde en el puerto 80
+      ansible.builtin.uri:
+        url: http://127.0.0.1/
+        status_code: 200
+      register: health
+      retries: 10
+      delay: 3
+      until: health.status == 200
+
+  handlers:
+    - name: Recargar iptables
+      ansible.builtin.command: netfilter-persistent reload
+      changed_when: true
+
+    # iptables-restore vacía las cadenas de Docker; reiniciarlo las recrea.
+    - name: Reiniciar docker
+      ansible.builtin.systemd:
+        name: docker
+        state: restarted
