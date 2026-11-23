@@ -1,0 +1,13 @@
+---
+import { profile } from '../data/projects';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <p class="eyebrow">{profile.role}</p>
+  <h1 id="hero-title">Hola, soy {profile.name}.</h1>
+  <p class="lead">{profile.bio}</p>
+  <p class="actions">
+    <a class="btn" href="#proyectos">Ver proyectos</a>
+    <a class="btn ghost" href={profile.github} rel="noopener noreferrer" target="_blank">GitHub ↗</a>
+  </p>
+</section>

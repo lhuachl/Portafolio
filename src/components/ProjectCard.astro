@@ -1,0 +1,18 @@
+---
+import type { Project } from '../data/projects';
+import { slugify } from '../lib/projects';
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+---
+
+<article class="card" data-language={project.language}>
+  <h3><a href={`/projects/${slugify(project.name)}`}>{project.name}</a></h3>
+  <p>{project.description}</p>
+  <footer>
+    <span class="tag">{project.language}</span>
+    <a href={project.url} rel="noopener noreferrer" target="_blank">GitHub ↗</a>
+  </footer>
+</article>

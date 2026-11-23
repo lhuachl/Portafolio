@@ -1,0 +1,14 @@
+---
+import type { Project } from '../data/projects';
+import { sortByDate } from '../lib/projects';
+import ProjectCard from './ProjectCard.astro';
+
+interface Props {
+  projects: Project[];
+}
+const { projects } = Astro.props;
+---
+
+<ul class="grid" aria-label="Lista de proyectos">
+  {sortByDate(projects).map((project) => <li><ProjectCard project={project} /></li>)}
+</ul>

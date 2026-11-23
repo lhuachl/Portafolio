@@ -1,0 +1,11 @@
+services:
+  web:
+    # En la VM se hace `docker compose pull` de la imagen de DockerHub.
+    # En local, `docker compose up --build` la construye desde el Dockerfile.
+    image: ${DOCKER_USERNAME:-local}/portafolio:latest
+    build: .
+    container_name: portafolio
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped

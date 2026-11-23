@@ -1,0 +1,13 @@
+---
+import { profile } from '../data/projects';
+---
+
+<section id="contacto" aria-labelledby="contact-title">
+  <h2 id="contact-title">Contacto</h2>
+  <p>¿Quieres hablar de un proyecto? Escríbeme.</p>
+  <p class="actions">
+    <a class="btn" href={`mailto:${profile.email}`}>{profile.email}</a>
+    <a class="btn ghost" href={profile.linkedin} rel="noopener noreferrer" target="_blank">LinkedIn ↗</a>
+    <a class="btn ghost" href={profile.github} rel="noopener noreferrer" target="_blank">github.com/{profile.handle}</a>
+  </p>
+</section>

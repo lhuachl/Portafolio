@@ -1,0 +1,52 @@
+name: CI (dev) - pruebas automatizadas
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [main]
+  # Reutilizable: deploy.yml lo llama antes de desplegar.
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Unitarias, integración y e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Instalar dependencias
+        run: bun install --frozen-lockfile
+
+      - name: Tests unitarios
+        run: bun run test:unit
+
+      - name: Tests de integración
+        run: bun run test:integration
+
+      - name: Instalar Chromium para Playwright
+        run: bunx playwright install --with-deps chromium
+
+      - name: Tests e2e
+        run: bun run test:e2e
+
+      - name: Subir reporte de Playwright si falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+
+      - name: Build de producción
+        run: bun run build

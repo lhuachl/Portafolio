@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import { projects } from '../../data/projects';
+import { slugify } from '../../lib/projects';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: slugify(project.name) },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<Base title={`${project.name} · Portafolio`} description={project.description}>
+  <article class="detail">
+    <p><a href="/#proyectos">← Volver a proyectos</a></p>
+    <h1>{project.name}</h1>
+    <p class="lead">{project.description}</p>
+    <dl>
+      <dt>Lenguaje</dt>
+      <dd>{project.language}</dd>
+      <dt>Última actualización</dt>
+      <dd><time datetime={project.updated}>{project.updated}</time></dd>
+    </dl>
+    <p class="actions">
+      <a class="btn" href={project.url} rel="noopener noreferrer" target="_blank">Ver repositorio ↗</a>
+    </p>
+  </article>
+</Base>

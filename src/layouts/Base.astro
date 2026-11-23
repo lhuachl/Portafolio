@@ -1,0 +1,37 @@
+---
+import '../styles/global.css';
+import { profile } from '../data/projects';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title = `${profile.name} · Portafolio`, description = profile.bio } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip" href="#main">Saltar al contenido</a>
+    <header class="site-header">
+      <a class="brand" href="/">{profile.handle}</a>
+      <nav aria-label="Principal">
+        <a href="/#proyectos">Proyectos</a>
+        <a href="/#habilidades">Habilidades</a>
+        <a href="/#contacto">Contacto</a>
+      </nav>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <p>© {new Date().getFullYear()} {profile.name} · Hecho con Astro</p>
+    </footer>
+  </body>
+</html>
